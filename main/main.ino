@@ -7,5 +7,5 @@ void setup() {
 }
 
 void loop() {
-  ledBlinker.blink(1000); // Blink every 1000 ms or 1 second
+  ledBlinker.blink(500); // Blink every 1/2 second
 }
