@@ -1,3 +1,4 @@
+#include "properties.h"
 #include "Blinker.h"
 
 Blinker ledBlinker(2); // LED is on pin 2 for Lolin board
