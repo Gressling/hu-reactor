@@ -56,8 +56,9 @@ void setup() {
   timeClient.begin();
   timeClient.update();
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 50; i++) {
     run_once();
+    delay(1000);
   }
 }
 
@@ -78,20 +79,30 @@ void run_once() {
 
   ams.readCalibratedValues(calibratedValues);
 
+  String resultString = ""; // Initialize an empty string to store the result
+
   for (int i = 0; i < AS726x_NUM_CHANNELS; i++) {
-    String postData = "fkeyLimsDevice=6&timestamp=" + String(currentYear) + "-" + String(currentMonth) +
-      "-" + String(currentDay) + " " + time + "&sensorValue=" + String(i + 1) + String(int(round(calibratedValues[i])));
-    
-    String host = "http://labinformatics.gearhostpreview.com/v1";
-    String uri = "lims-timeseries.php";
+    int roundedValue = round(calibratedValues[i]); // Round the value to the nearest integer
+    resultString += String(roundedValue); // Convert the rounded value to a string and append it to the result string
+
+    if (i < AS726x_NUM_CHANNELS - 1) {
+      resultString += "|"; // Add the separator '|' between values (except for the last value)
+    }
+  }
+
+  String postData = "fkeyLimsDevice=6&timestamp=" + String(currentYear) + "-" + String(currentMonth) +
+    "-" + String(currentDay) + " " + time + "&sensorValue=" + resultString;
+  
+  String host = "http://labinformatics.gearhostpreview.com/v1";
+  String uri = "lims-timeseries.php";
   
   // if (counter > 0) {
   //   counter--;
   // } else {
-    http.begin(wifiClient, host + "/" + uri);
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    int httpCode = http.POST(postData);
-    Serial.println(postData);
+  http.begin(wifiClient, host + "/" + uri);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  int httpCode = http.POST(postData);
+  Serial.println(postData);
   // }
-  }
+  
 }
