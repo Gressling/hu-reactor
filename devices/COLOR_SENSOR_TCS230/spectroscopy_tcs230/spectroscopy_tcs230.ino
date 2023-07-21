@@ -10,8 +10,8 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <MySQL_Generic.h>
-#include <WiFiCredentials.h>
-#include <DBCredentials.h>
+#include "WiFiCredentials.h"
+#include "DBCredentials.h"
 
 
 MySQL_Connection conn((Client *)&client);
