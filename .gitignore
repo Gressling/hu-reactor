@@ -1,1 +1,3 @@
 .vscode/
+devices/COLOR_SENSOR_TCS230/spectroscopy_tcs230/WiFiCredentials.h
+devices/COLOR_SENSOR_TCS230/spectroscopy_tcs230/DBCredentials.h
