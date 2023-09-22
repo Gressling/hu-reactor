@@ -8,3 +8,5 @@ Use the master.ino file to upload the programm to the nodeMCU, set the current n
 Once the correct temperature is reached and the button has been pressed once the nodemcu will collect data and send it to the console/database(edit as needed). Finish the experiment by pressing the button again.
 
 For the Arrhenius experiment you can bake Natron (Natriumhydrogencarbonat, PH = 8.5), spread out on a baking sheet, on 200 celsius for 30 minutes. This will result in Soda (Natriumcarbonat, PH = 11,5).
+
+On driver error on Windows 11, use CH341SER.exe to reset your driver to a 2019 version. Check the current version using the device manager.
