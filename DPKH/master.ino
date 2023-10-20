@@ -8,8 +8,8 @@
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
-const char* ssid = "7520Low";
-const char* password = "62272999407145972343";
+const char* ssid = "";
+const char* password = "";
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 0;
