@@ -10,3 +10,5 @@ Once the correct temperature is reached and the button has been pressed once the
 For the Arrhenius experiment you can bake Natron (Natriumhydrogencarbonat, PH = 8.5), spread out on a baking sheet, on 200 celsius for 30 minutes. This will result in Soda (Natriumcarbonat, PH = 11,5).
 
 On driver error on Windows 11, use CH341SER.exe to reset your driver to a 2019 version. Check the current version using the device manager.
+
+Set the Lab PSU to 12V, 6A. If there are Arduino IDE upload connection problems try writing to the NodeMCU while PSU off.
