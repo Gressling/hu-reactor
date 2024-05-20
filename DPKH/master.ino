@@ -35,7 +35,6 @@ const int IN2_PIN = D8;     //motor
 const int PH_PIN = A0;      //ph sensor
 const int peltierPin = D5;   //peltier
 const int temp_pin = D3;    //temp sensor
-// #define ONE_WIRE_BUS 0
 
 //temp
 OneWire oneWire(temp_pin);
@@ -47,8 +46,6 @@ bool experimentRunning = false;
 
 //peltier
 float goal_temp = 40;
-//motor
-// bool shake_one_way = false;
 
 //button interrupt
 void ICACHE_RAM_ATTR buttonISR() {
@@ -57,6 +54,7 @@ void ICACHE_RAM_ATTR buttonISR() {
   if (buttonState == LOW) {
     // Button is pressed, start the experiment
     experimentRunning = !experimentRunning;
+    Serial.println("button: " + String(experimentRunning));
   }
 }
 
@@ -67,15 +65,16 @@ void setUpWifi() {
 }
 
 void initialize() {
-  //temp
-  // sensors.begin();
   //motor
   pinMode(ENA_PIN, OUTPUT);
   pinMode(IN1_PIN, OUTPUT);
   pinMode(IN2_PIN, OUTPUT);
+
   analogWrite(ENA_PIN, 0);
-
-
+  //peltier
+  pinMode(peltierPin, OUTPUT);
+  digitalWrite(peltierPin, LOW);
+  
   //button
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), buttonISR, CHANGE);
@@ -91,18 +90,6 @@ void initialize() {
   timeClient.update();
 }
 
-void shake() {
-  // if (shake_one_way) {
-    digitalWrite(IN1_PIN, HIGH); // control motor A spins clockwise
-    digitalWrite(IN2_PIN, LOW);  // control motor A spins clockwise
-  // } 
-  // else {
-  //   digitalWrite(IN1_PIN, LOW); // control motor A spins clockwise
-  //   digitalWrite(IN2_PIN, HIGH);  // control motor A spins clockwise
-  // }
-  // shake_one_way = !shake_one_way;
-  analogWrite(ENA_PIN, 40);
-}
 float getTemp() {
   sensors.requestTemperatures();
   return sensors.getTempCByIndex(0);
@@ -145,11 +132,11 @@ String gatherSensorData() {
   String col = getCol();
 
   //concatenate
-  String payload = col + "|" + String(ph) + "|" + String(temp);
+  String payload = "Col: " + col + " | PH:  " + String(ph) + " | Temp: " + String(temp);
 
   //post
   String postData = "fkeyLimsDevice=6&timestamp=" + String(currentYear) + "-" + String(currentMonth) +
-    "-" + String(currentDay) + " " + time + "&sensorValue=" + payload;
+    "-" + String(currentDay) + " " + time + "&sensorValue= " + payload;
 
   return postData;
 }
@@ -157,7 +144,6 @@ void sendToDatabase(String postData) {
   http.begin(wifiClient, host + "/" + uri);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   int httpCode = http.POST(postData);
-  Serial.println(postData);
 }
 bool control_temp() {
   float current_temp = getTemp();
@@ -177,26 +163,28 @@ void setup() {
 }
 
 void loop() {
-  // digitalWrite(peltierPin, HIGH);
-  // delay(2000);
-  // digitalWrite(peltierPin, LOW);
-  // delay(2000);
 
-  bool temp_ok = control_temp();
-  if (experimentRunning && temp_ok) {
-    shake();
-    String postData = gatherSensorData();
-    // Serial.println(payload);
-    sendToDatabase(postData);
-    // delay(1000);
-  } else {
-    // Experiment is not running, stop the motor
-    Serial.println(temp_ok);
+  String postData = gatherSensorData();
+  // sendToDatabase(postData);
+  Serial.println(postData); //for debug
+  if (experimentRunning){
+    //turn on motor
+    digitalWrite(IN1_PIN, HIGH);
+    digitalWrite(IN2_PIN, LOW);
+    analogWrite(ENA_PIN, 30);
+
+    //turn on peltier
+    digitalWrite(peltierPin, HIGH);
+  }
+  else {
+    //turn off peltier
+    digitalWrite(peltierPin, LOW);
+    //turn off motor
     digitalWrite(IN1_PIN, LOW);
     digitalWrite(IN2_PIN, LOW);
     analogWrite(ENA_PIN, 0);
   }
-  // delay(1000);
+  delay(2000);
 }
 
 
