@@ -158,7 +158,7 @@ bool control_temp() {
 
 void setup() {
   Serial.begin(9600);
-  setUpWifi();
+  // setUpWifi(); -- temp. deactivated
   initialize();
 }
 
